@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Debjoti!</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Rowdies:wght@300;400;700&display=swap');
+
+        :root {
+            --primary: #ff0080;
+            --secondary: #7928ca;
+            --accent: #4facfe;
+            --bg-dark: #020617;
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: white;
+            margin: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(90deg, #ff0080, #7928ca, #4facfe, #ff0080);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 300% center; }
+        }
+
+        /* Canvas Background for Starfield */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Responsive Grid for Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        @media (min-width: 768px) {
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* Floating Balloon Styles */
+        .balloon {
+            position: absolute;
+            z-index: 5;
+            pointer-events: none;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        }
+
+        .shake-input {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .name {
+            font-family: 'Pacifico', cursive;
+            color: #7cc0f8;
+            margin-top: 20px;
+            text-align: right;
+        }
+        .prey {
+            font-size: 5rem;
+            color: #ff0080;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        /* Typography Enhancements */
+        p {
+            font-weight: 400;
+        }
+        
+        b {
+            font-weight: 700;
+            color: #e66ca9;
+            transition: all 0.3s ease;
+        }
+        
+        b:hover {
+            text-shadow: 0 0 10px rgba(255, 103, 179, 0.6);
+            transform: scale(1.02);
+            letter-spacing: 0.5px;
+        }
+        
+        i {
+            font-style: italic;
+            color: #7cc0f8;
+            transition: all 0.3s ease;
+        }
+        
+        i:hover {
+            text-shadow: 0 0 10px rgba(124, 192, 248, 0.6);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+    <canvas id="starfield"></canvas>
+
+    <!-- 1. Access Screen -->
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950 p-6">
+        <div class="glass p-8 w-full max-w-sm text-center shadow-2xl border-white/5">
+            <div class="mb-6 inline-flex p-4 rounded-full bg-gradient-to-tr from-pink-500/20 to-purple-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">Private Access</h2>
+            <p class="text-slate-400 mb-8 text-sm">Enter Password to unlock<br><span class="opacity-50">(Hint: Nickname + date + month)</span></p>
+            
+            <div class="relative flex items-center mb-4">
+                <input type="password" id="password" placeholder="Passcode" 
+                       class="w-full bg-slate-900/80 border border-white/10 rounded-2xl p-4 pr-14 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all text-center tracking-widest text-lg">
+            </div>
+            
+            <button onclick="handleLogin()" 
+                    class="w-full bg-gradient-to-r from-pink-600 to-purple-700 font-bold py-4 rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-pink-900/20">
+                Unlock Surprise
+            </button>
+            <p id="error-msg" class="text-red-400 mt-4 text-xs font-medium opacity-0">Incorrect, try again!</p>
+        </div>
+    </div>
+
+    <!-- 2. Main Content Container -->
+    <div id="main-content" class="hidden opacity-0 flex-col items-center py-12 px-4 space-y-12 pb-24">
+        
+        <!-- Hero Section -->
+        <header class="text-center w-full max-w-4xl pt-10">
+            <div class="overflow-hidden mb-2">
+                <span class="text-3xl md:text-5xl font-light tracking-widest text-white/70 block hero-line">HAPPY BIRTHDAY</span>
+            </div>
+            <h1 id="main-title" class="text-6xl md:text-9xl font-black gradient-text tracking-tighter leading-tight mb-4">
+                DEBJOTI
+            </h1>
+            <div class="glass inline-block px-6 py-2 mb-8">
+                <p class="text-pink-400 font-bold tracking-[0.2em] text-xs uppercase">The Big Birthday Bash • April 10</p>
+            </div>
+        </header>
+
+        <!-- Countdown Card -->
+        <section class="w-full max-w-md">
+            <div id="countdown-card" class="glass p-6 text-center shadow-xl">
+                <div class="flex justify-around items-center">
+                    <div class="flex flex-col">
+                        <span id="days" class="text-4xl font-black text-white">00</span>
+                        <span class="text-[10px] uppercase tracking-widest text-pink-500 font-bold">Days</span>
+                    </div>
+                    <div class="h-10 w-[1px] bg-white/10"></div>
+                    <div class="flex flex-col">
+                        <span id="hours" class="text-4xl font-black text-white">00</span>
+                        <span class="text-[10px] uppercase tracking-widest text-purple-400 font-bold">Hours</span>
+                    </div>
+                    <div class="h-10 w-[1px] bg-white/10"></div>
+                    <div class="flex flex-col">
+                        <span id="mins" class="text-4xl font-black text-white">00</span>
+                        <span class="text-[10px] uppercase tracking-widest text-blue-400 font-bold">Mins</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <div class="flex flex-col items-center space-y-4">
+            <button onclick="scrollToSection('message-area')" 
+                    class="bg-white text-black px-10 py-4 rounded-full font-black text-sm tracking-widest hover:scale-105 active:scale-95 transition-transform shadow-2xl">
+                UNWRAP THE MESSAGE 🎁
+            </button>
+            <p class="text-white/30 text-xs animate-bounce">Scroll down</p>
+        </div>
+
+        <!-- Personal Message -->
+        <section id="message-area" class="w-full max-w-4xl glass p-8 md:p-12 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-pink-500/10 blur-3xl rounded-full"></div>
+            <h2 class="text-3xl font-bold mb-6 gradient-text">Hey Debjoti,</h2>
+            <div class="space-y-4 text-slate-200 leading-relaxed text-lg">
+                <p>I hope you have a <b>wonderful birthday</b>! I was thinking about something to give to you on this special day. Then I came up with an idea of posting you on the internet.Like positively!</p>
+                <p>May this year be your most adventurous one yet, filled with success that surprises you and moments that make you smile until your face hurts. May all your worries disappear and replaced with <i>joy and laughter</i>.</p>
+                <p>You had been a part of my life for 8 wonderful years, sitting behind me and <i>I'm grateful for every moment we've shared</i>. I know I had been a shy boy from the begining and used to interact less with others. But <b>you've been always an exception</b>. I could easily share my feelings with you. You also made a way for me to communicate with others. I may have been sometimes annoying to you, but you always seem to cope with it. <i>I am so sorry for the times I've offended you</i>. I have acknowledged that you have left me in a time when I started to socialize with others more easily. <i>You didn't let your departure put a dent in my life, but it left a crater in my heart.</i></p>
+                <p>Another important thing: <i>I may be coming to USA in late May on a study tour</i>. I will be visiting New York, MIT, and NASA. Please let me know if I can meet you during that tour.</p>
+                <p class="font-bold text-white pt-4">Keep being awesome (Debjoti). Happy Birthday! 🚀</p>
+                <p class="name">— Your Friend <br>Arnob</p>
+            </div>
+        </section>
+        <section id="message-area" class="w-full max-w-4xl glass p-8 md:p-12 relative overflow-hidden">
+            <p class="prey">🙏</p><br>
+            <p><b>I am really sorry</b> for what happened the other day when Muhi and Borno went too far and sent those things <i>without my permission</i>. They were my guests that day and I couldn't argue with them much. I talked with them later and argued with them on this matter. And I also want to tell you that <i>almost everyone knows that you are in Canada</i>. This information was leaked by others. <b>I again apologize for the inconvenience I caused.</b></p>
+        </section>
+
+        
+        <!-- Gallery -->
+        <section class="w-full max-w-4xl">
+            <h3 class="text-xl font-bold mb-6 px-2 flex items-center gap-3">
+            <span class="w-8 h-[2px] bg-pink-500"></span>
+            Memory Lane
+            </h3>
+            <div class="flex flex-col gap-4">
+            <div class="gallery-item glass w-full aspect-video overflow-hidden group">
+                <img src="Debjoti and Friends.jpeg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Debjoti and Friends">
+            </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center opacity-40 text-[10px] tracking-widest pt-12">
+            MADE WITH ❤️ YOUR FRIEND ARNOB | 2026<br>
+            This is a Private access website. No one can access this without a correct password
+        </footer>
+    </div>
+
+    <script>
+        // --- Initialization ---
+        gsap.registerPlugin(TextPlugin);
+        const PASSWORD = "dibbo10april";
+        let isCelebrating = false;
+
+        // --- Starfield Background ---
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        // --- Password Toggle Eye Icon ---
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.createElement('button');
+        eyeIcon.type = 'button';
+        eyeIcon.setAttribute('aria-label', 'Toggle password visibility');
+        eyeIcon.innerHTML = `
+            <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="display: none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+        `;
+        eyeIcon.style.cssText = `
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 0, 128, 0.3);
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff0080;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        `;
+        
+        eyeIcon.onmouseenter = () => {
+            eyeIcon.style.background = 'rgba(255, 0, 128, 0.15)';
+            eyeIcon.style.borderColor = 'rgba(255, 0, 128, 0.6)';
+            eyeIcon.style.transform = 'translateY(-50%) scale(1.1)';
+        };
+        
+        eyeIcon.onmouseleave = () => {
+            eyeIcon.style.background = 'rgba(255, 255, 255, 0.05)';
+            eyeIcon.style.borderColor = 'rgba(255, 0, 128, 0.3)';
+            eyeIcon.style.transform = 'translateY(-50%) scale(1)';
+        };
+        
+        eyeIcon.onclick = (e) => {
+            e.preventDefault();
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            
+            const eyeOpen = eyeIcon.querySelector('.eye-open');
+            const eyeClosed = eyeIcon.querySelector('.eye-closed');
+            
+            if (isPassword) {
+                eyeOpen.style.display = 'none';
+                eyeClosed.style.display = 'block';
+            } else {
+                eyeOpen.style.display = 'block';
+                eyeClosed.style.display = 'none';
+            }
+        };
+        
+        passwordInput.parentElement.appendChild(eyeIcon);
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5;
+                this.speed = Math.random() * 0.05;
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < 150; i++) stars.push(new Star());
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(s => { s.update(); s.draw(); });
+            requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        initStars();
+        animateStars();
+
+        // --- Logic ---
+
+        function handleLogin() {
+            const input = document.getElementById('password');
+            const err = document.getElementById('error-msg');
+            
+            if (input.value.toLowerCase() === PASSWORD) {
+                unlock();
+            } else {
+                input.classList.add('shake-input');
+                err.style.opacity = '1';
+                setTimeout(() => {
+                    input.classList.remove('shake-input');
+                    err.style.opacity = '0';
+                }, 1000);
+            }
+        }
+
+        function unlock() {
+            const tl = gsap.timeline();
+            
+            tl.to('#login-screen', {
+                y: '-100%',
+                duration: 1.2,
+                ease: "expo.inOut"
+            });
+
+            tl.set('#main-content', { display: 'flex' }, "-=0.5");
+            
+            tl.to('#main-content', {
+                opacity: 1,
+                duration: 0.8,
+                onComplete: () => {
+                    document.body.classList.remove('overflow-hidden');
+                    document.getElementById('login-screen').remove();
+                    startCountdown();
+                    spawnBalloons();
+                }
+            });
+
+            // Entrance animations
+            tl.from('.hero-line', { y: 100, opacity: 0, duration: 1, ease: "power4.out" }, "-=0.3");
+            tl.from('#main-title', { scale: 1.5, filter: 'blur(20px)', opacity: 0, duration: 1.5, ease: "power2.out" }, "-=0.8");
+            tl.from('#countdown-card', { y: 50, opacity: 0, duration: 1 }, "-=1");
+            tl.from('.gallery-item', { y: 30, opacity: 0, stagger: 0.1, duration: 0.8 }, "-=0.5");
+        }
+
+        function celebrate() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff0080', '#7928ca', '#4facfe']
+            });
+        }
+
+        function startCountdown() {
+            const update = () => {
+                const now = new Date();
+                let target = new Date(`April 10, ${now.getFullYear()} 00:00:00`);
+                if (now > target) target.setFullYear(target.getFullYear() + 1);
+
+                const diff = target - now;
+                const d = Math.floor(diff / 864e5);
+                const h = Math.floor((diff % 864e5) / 36e5);
+                const m = Math.floor((diff % 36e5) / 6e4);
+
+                document.getElementById('days').innerText = d.toString().padStart(2, '0');
+                document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+                document.getElementById('mins').innerText = m.toString().padStart(2, '0');
+            };
+            update();
+            setInterval(update, 60000);
+        }
+
+        function spawnBalloons() {
+            const colors = ['#ff0080', '#7928ca', '#4facfe', '#fbbf24'];
+            setInterval(() => {
+                if (document.visibilityState !== 'visible') return;
+                const b = document.createElement('div');
+                b.className = 'balloon';
+                const size = Math.random() * 30 + 20;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                b.innerHTML = `
+                    <svg width="${size}" height="${size * 1.2}" viewBox="0 0 30 40">
+                        <ellipse cx="15" cy="15" rx="13" ry="15" fill="${color}" fill-opacity="0.6"/>
+                        <path d="M15 30 L15 40" stroke="white" stroke-width="1" stroke-opacity="0.3"/>
+                    </svg>
+                `;
+                b.style.left = Math.random() * 100 + 'vw';
+                b.style.top = '110vh';
+                document.body.appendChild(b);
+
+                gsap.to(b, {
+                    y: '-130vh',
+                    x: (Math.random() - 0.5) * 200,
+                    rotation: Math.random() * 45,
+                    duration: 8 + Math.random() * 4,
+                    ease: "none",
+                    onComplete: () => b.remove()
+                });
+            }, 3000);
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            celebrate();
+        }
+
+        // Enter key listener
+        document.getElementById('password').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+    </script>
+</body>
+</html>
